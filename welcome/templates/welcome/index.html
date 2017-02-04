@@ -1,240 +1,100 @@
 {% load staticfiles %}
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width">
-    <title> CodeBlock </title>
-    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css'%}">
-    <link rel="stylesheet" href="{% static 'vs/editor/editor.main.css' %}">
-    <style type="text/css">
-        body {
-            padding-top: 70px;
-        }
-        footer {
-      		background-color: #111;
-      		color: #eee;
-      		padding: 15px;
-    	}
-        #editor {
-            width: 100%;
-            height: 550px;
-            border: 1px solid gray;
-        }
-        #editor .inputarea { position: fixed !important; top: 0 !important; left: 0 !important; }
-    </style>
+  <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+  <script src="{% static 'js/codemirror.js' %}"></script>
+  <script src="{% static 'js/mode/clike.js' %}"></script>
+  <script src="{% static 'js/mode/ruby.js' %}"></script>
+  <script src="{% static 'js/mode/python.js' %}"></script>
+
+  <link rel="stylesheet" type="text/css" href="{% static 'css/codemirror.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/flexboxgrid.css' %}">
+
+  <script src="{% static 'js/demo.js' %}"></script>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/demo.css' %}">
+
+  <title>CodeBlock</title>
 </head>
+
 <body>
-   <!-- Fixed navbar -->
-   <nav class="navbar navbar-inverse navbar-fixed-top">
-     <div class="container-fluid">
-       <div class="navbar-header">
-         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-           <span class="sr-only">Toggle navigation</span>
-           <span class="icon-bar"></span>
-           <span class="icon-bar"></span>
-           <span class="icon-bar"></span>
-         </button>
-         <a class="navbar-brand" href="#">CodeBlocks</a>
-       </div>
-       <div id="navbar" class="navbar-collapse collapse">
-         <ul class="nav navbar-nav">
-           <li class="active"><a href="#">Home</a></li>
-           <li><a href="#about">About</a></li>
-           <li><a href="#contact">Contact</a></li>
-           <li class="dropdown">
-             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Languages <span class="caret"></span></a>
-             <ul class="dropdown-menu">
-               <li><a href="#">C</a></li>
-               <li><a href="#">C++</a></li>
-               <li><a href="#">Java</a></li>
-               <li role="separator" class="divider"></li>
-               <li class="dropdown-header">Scripts</li>
-               <li><a href="#">Python</a></li>
-               <li><a href="#">JavaScript</a></li>
-             </ul>
-           </li>
-         </ul>
-         <ul class="nav navbar-nav navbar-right">
-         </ul>
-       </div><!--/.nav-collapse -->
-     </div>
-   </nav>
-<div class="container-fluid">
-	<div class="row">
-		<div class="col-sm-8">
-			<div class="row">
-				<div class="col-sm-4">
-					<label class="control-label">Language</label>
-					<select class="language-picker form-control">
-                    </select>
-				</div>
-				<div class="col-sm-4">
-					<label class="control-label">Theme</label>
-					<select class="theme-picker form-control">
-						<option>Visual Studio</option>
-						<option>Visual Studio Dark</option>
-						<option>High Contrast Dark</option>
-					</select>
-				</div>
-			</div>
-			<div class="editor-frame">
-				<div class="loading editor" style="display: none;">
-					<div class="progress progress-striped active">
-						<div class="bar"></div>
-					</div>
-				</div>
-				<div id="editor"></div>
-			</div>
-		</div>
-        <div class="col-sm-3">
-            <div class="form-group">
-                <label for="input" class="control-label">STDIN</label>
-                <textarea name="input" rows="3" cols="80" class="form-control" placeholder="INPUT"></textarea>
-            </div>
-            <div class="form-group">
-                <label for="output" class="control-label">STDOUT</label>
-                <textarea name="output" rows="3" cols="80" class="form-control" placeholder="OUTPUT" disabled></textarea>
-            </div>
-            <div class="form-group">
-                <button name="compile" class="btn btn-primary">Compile</button>
-                <button name="run" class="btn btn-success">Run</button>
-            </div>
+  <div class="content">
+    <div class="headline center-xs center-sm center-md center-lg">
+        <h1><a href="http://rajarya.me/ide">CodeBlock</a></h1>
+        <h3>Open source online judge API for code compilation and execution on given test data.</h3>
+    </div>
+
+    <p>
+      <b>CodeBlock</b> is an open source online judge API for code compilation and execution on given test data.
+      It provides extensive documentation for developing, configuring and hosting your own instance with ease.
+      Currently supports 16 compilers and interpreters, and more of them can be added easly.
+      It's powered by <b>Rails</b> and every untrusted code you run is sandboxed using <a href="https://github.com/ioi/isolate" target="_blank">isolate</a>.
+    </p>
+
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <h2>Source code</h2>
+        <div id="source-editor">
         </div>
-	</div>
-	<hr>
-</div>
-</div>
-<footer>
-	<div class="container">
-	<div class="row">
-		<div class="col-sm-4">
-			Powered By <strong>Red Hat OpenShift</strong>, built on <strong>Django</strong> 
-		</div>
-		<div class="col-sm-4">
-			&copy; Rajmani Arya.
-		</div>
-	</div>
-	</div>
-</footer>
-<script src="{% static 'jquery/jquery.min.js' %}"></script>
-<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
-<script type="text/javascript">
-    var require = { paths: { 'vs': '/static/vs' } };
-</script>
-<script src="{% static 'vs/loader.js' %}"></script>
-<script src="{% static 'vs/editor/editor.main.nls.js' %}"></script>
-<script src="{% static 'vs/editor/editor.main.js' %}"></script>
-<script type="text/javascript">
-"use strict";
-var editor = null;
-$(document).ready(function() {
-	require(['vs/editor/editor.main'], function () {
-        var languages = ['c','cpp','python','java','javascript'];
-        var MODES = [];
-        languages.forEach(function(lang) {
-            MODES.push({
-                modeId: lang,
-                sampleURL: 'static/samples/sample.' + lang + '.txt'
-            });
-        });
-		var startModeIndex = 0;
-		for (var i = 0; i < MODES.length; i++) {
-			var o = document.createElement('option');
-			o.textContent = MODES[i].modeId;
-			if (MODES[i].modeId === 'cpp') {
-				startModeIndex = i;
-			}
-			$(".language-picker").append(o);
-		}
-		$(".language-picker")[0].selectedIndex = startModeIndex;
-		loadSample(MODES[startModeIndex]);
-		$(".language-picker").change(function() {
-			loadSample(MODES[this.selectedIndex]);
-		});
+      </div>
 
-		$(".theme-picker").change(function() {
-			changeTheme(this.selectedIndex);
-		});
-	});
+      <div class="col-xs-4 col-sm-6 col-md-3 col-lg-3">
+        <h2>Input</h2>
+        <div id="input-editor">
+        </div>
+      </div>
 
-	window.onresize = function () {
-		if (editor) {
-			editor.layout();
-		}
-	};
-});
+      <div class="col-xs-8 col-sm-6 col-md-3 col-lg-3">
+        <h2>Expected Output</h2>
+        <div id="expected-output-editor">
+        </div>
+      </div>
+    </div>
 
-var preloaded = {};
-(function() {
-	var elements = Array.prototype.slice.call(document.querySelectorAll('pre[data-preload]'), 0);
+    <div class="row">
+      <div class="controls col-xs-12 col-sm-12 col-md-12 col-lg-12 end-xs end-sm end-md end-lg">
+        <img id="loader" src="images/loader.gif"/>
+        <select id="select-language" onchange="changeLanguage()">
+          <option value="1" mode="text/x-csrc">C (gcc 5.4)</option>
+          <option value="2" mode="text/x-c++src">C++ (g++ 5.4)</option>
+          <!-- <option value="3" mode="text/x-java">Java (SE 1.8)</option> -->
+          <option value="4" mode="text/x-ruby">Ruby (2.3.1)</option>
+          <option value="5" mode="text/x-python">Python (2.7.12)</option>
+          <option value="6" mode="text/x-python">Python (3.5.2)</option>
+        </select>
+        <button  onclick="insertTemplate()">Insert Template</button>
+        <button id="run-button" onclick="runSource()">Run</button>
+      </div>
+    </div>
 
-	elements.forEach(function(el) {
-		var path = el.getAttribute('data-preload');
-		preloaded[path] = el.innerText || el.textContent;
-		el.parentNode.removeChild(el);
-	});
-})();
+    <div class="row">
+      <div class="col-xs-8 col-sm-6 col-md-6 col-lg-3">
+        <h2>Actual Output</h2>
+        <div id="actual-output-editor">
+        </div>
+      </div>
 
-function xhr(url, cb) {
-	if (preloaded[url]) {
-		return cb(null, preloaded[url]);
-	}
-	$.ajax({
-		type: 'GET',
-		url: url,
-		dataType: 'text',
-		error: function () {
-			cb(this, null);
-		}
-	}).done(function(data) {
-		cb(null, data);
-	});
-}
+      <div class="col-xs-4 col-sm-6 col-md-6 col-lg-3">
+        <h2>Status</h2>
+        <div id="status-editor">
+        </div>
+      </div>
+    </div>
+  </div>
 
-function loadSample(mode) {
-	$('.loading.editor').show();
-	xhr(mode.sampleURL, function(err, data) {
-		if (err) {
-			if (editor) {
-				if (editor.getModel()) {
-					editor.getModel().dispose();
-				}
-				editor.dispose();
-				editor = null;
-			}
-			$('.loading.editor').fadeOut({ duration: 200 });
-			$('#editor').empty();
-			$('#editor').append('<p class="alert alert-error">Failed to load ' + mode.modeId + ' sample</p>');
-			return;
-		}
+  <div class="footer">
+    <div id="copyright">&copy; 2016 <a href="http://rajarya.me">Rajmani Arya</a></div>
+  </div>
 
-		if (!editor) {
-			$('#editor').empty();
-			editor = monaco.editor.create(document.getElementById('editor'), {
-				model: null,
-			});
-		}
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-		var oldModel = editor.getModel();
-		var newModel = monaco.editor.createModel(data, mode.modeId);
-		editor.setModel(newModel);
-		if (oldModel) {
-			oldModel.dispose();
-		}
-		$('.loading.editor').fadeOut({ duration: 300 });
-	})
-}
+    ga('create', 'UA-63626536-2', 'auto');
+    ga('send', 'pageview');
+  </script>
+<body>
 
-function changeTheme(theme) {
-	var newTheme = (theme === 1 ? 'vs-dark' : ( theme === 0 ? 'vs' : 'hc-black' ));
-	if (editor) {
-		editor.updateOptions({ 'theme' : newTheme });
-	}
-}
-
-</script>
-</body>
 </html>
