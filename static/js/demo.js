@@ -1,4 +1,4 @@
-var BASE_URL = "https://api.rajarya.me";
+var BASE_URL = "http://api.rajarya.me";
 var sourceEditor, inputEditor, expectedOutputEditor, actualOutputEditor, statusEditor;
 
 var cSource = "\
@@ -105,14 +105,18 @@ function runSource() {
   $.ajax({
       url: BASE_URL + "/submissions",
       type: "POST",
+	  crossDomain:true,
       async: false,
       contentType: "application/json",
       data: JSON.stringify(data),
-      success: function(data, textStatus, jqXHR) {
-        submission_id = data.id;
-      }
+	  success: function(data, textStatus, jqXHR) {
+		  console.log('success', data.id);
+		  submission_id = data.id;
+	  },
+	  error: function(data, textStatus, jqXHR) {
+		  alert('error', data);
+	  }
   });
-
   setTimeout(fetchSubmission.bind(null, submission_id), 2000);
 };
 
